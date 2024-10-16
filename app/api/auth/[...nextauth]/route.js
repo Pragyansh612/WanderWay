@@ -3,10 +3,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "../../../../lib/mongodb";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {
+// Define NextAuth configuration options
+const authOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -70,6 +71,7 @@ export const authOptions = {
   },
 };
 
+// NextAuth handler to manage both GET and POST requests
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
