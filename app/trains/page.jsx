@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/train.json";
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
 export default function FlightSearch() {
     const [trains, setTrains] = useState([]);
@@ -17,6 +16,11 @@ export default function FlightSearch() {
     const [number, setNumber] = useState('')
 
     const router = useRouter();
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const date = `${year}-${month}-${day}`;
 
     const defaultOptions = {
         loop: true,
@@ -28,6 +32,14 @@ export default function FlightSearch() {
     };
 
     const searchTrains = async () => {
+        if (!origin || !destination || !departureDate || !number) {
+            setError("Please fill out all fields.");
+            return;
+        }
+        if (date > departureDate) {
+            setError("Invalid Date");
+            return;
+        }
         setLoading(true);
         setError(null);
         try {
@@ -48,9 +60,6 @@ export default function FlightSearch() {
             const result = await response.json();
             const filteredTrains = filterTrainsByStations(result, origin, destination);
             setTrains(filteredTrains);
-            console.log(result)
-            console.log('yes')
-            console.log(trains)
         } catch (err) {
             console.error('Error details:', err);
             setError(`Error fetching train data: ${err.message}`);
@@ -75,7 +84,7 @@ export default function FlightSearch() {
         const destination = train.train_to;
         const arriveTime = train.data.arriveTime;
         const departTime = train.data.departTime;
-    
+
         const query = new URLSearchParams({
             origin,
             destination,
@@ -84,12 +93,13 @@ export default function FlightSearch() {
             arriveTime,
             departTime,
             passengers: number,
-            departureDate: Date
+            departureDate: Date,
+            price: 450 * number
         });
-    
+
         router.push(`/booktrains?${query.toString()}`);
     };
-    
+
 
     return (
         <div className="relative min-h-screen flex flex-col items-center overflow-hidden"
@@ -105,7 +115,7 @@ export default function FlightSearch() {
                 left: '5%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '120px', opacity: 0.7 }} />
+                <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
 
             {/* Floating Cloud 2 */}
@@ -115,7 +125,7 @@ export default function FlightSearch() {
                 right: '10%',
                 animation: 'float 6s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '100px', opacity: 0.6 }} />
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
 
             {/* Floating Cloud 3 */}
@@ -125,7 +135,7 @@ export default function FlightSearch() {
                 left: '15%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '110px', opacity: 0.5 }} />
+                <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
             <div className="bg-white bg-opacity-95 shadow-xl w-7/12 mt-10 mb-10 rounded-3xl p-8 relative z-10">
                 <h1 className="text-4xl font-bold text-center text-gray-800 mb-5">Book Your Train</h1>
@@ -137,6 +147,7 @@ export default function FlightSearch() {
                             onChange={(e) => setOrigin(e.target.value)}
                             placeholder="Origin Code (e.g., DBRG, RNY, LGH, DLI)"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="text"
@@ -144,19 +155,23 @@ export default function FlightSearch() {
                             onChange={(e) => setDestination(e.target.value)}
                             placeholder="Destination Code (e.g., HWH, AGTL, DBG)"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="date"
                             value={departureDate}
                             onChange={(e) => setDepartureDate(e.target.value)}
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="number"
                             value={number}
+
                             onChange={(e) => setNumber(e.target.value)}
                             placeholder="Number of passengers"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <button
                             onClick={searchTrains}
@@ -186,8 +201,9 @@ export default function FlightSearch() {
                                                     {train.data.departTime}
                                                 </p>
                                                 <p className="text-gray-600">Total Days: {train.data.arriveTime.slice(7)}</p>
+                                                <p className="text-gray-600">Price: {450 * number}</p>
                                                 <button
-                                                    onClick={()=>bookTrain(index)}
+                                                    onClick={() => bookTrain(index)}
                                                     className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300"
                                                 >
                                                     Book Now

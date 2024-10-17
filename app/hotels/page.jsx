@@ -5,6 +5,7 @@ import axios from 'axios';
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/hotel.json";
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
 export default function FlightSearch() {
     const [hotels, setHotels] = useState([]);
@@ -16,6 +17,12 @@ export default function FlightSearch() {
     const [number, setNumber] = useState('');
     const [search, setSearch] = useState(false)
     const router = useRouter()
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const date = `${year}-${month}-${day}`;
+
     const defaultOptions = {
         loop: true,
         autoplay: true,
@@ -26,6 +33,14 @@ export default function FlightSearch() {
     };
 
     const searchHotels = async () => {
+        if (!origin || !from || !to || !number) {
+            setError("Please fill out all fields.");
+            return;
+        }
+        if (date > from || date > to) {
+            setError("Invalid Date");
+            return;
+        }
         setLoading(true);
         setError(null);
 
@@ -77,7 +92,7 @@ export default function FlightSearch() {
                 left: '0%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '120px', opacity: 0.7 }} />
+                <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
             <div style={{
                 position: 'absolute',
@@ -85,7 +100,7 @@ export default function FlightSearch() {
                 right: '0%',
                 animation: 'float 6s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '100px', opacity: 0.6 }} />
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
             <div style={{
                 position: 'absolute',
@@ -93,7 +108,7 @@ export default function FlightSearch() {
                 left: '15%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '110px', opacity: 0.5 }} />
+                <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
 
             <div className="bg-white bg-opacity-95 shadow-xl mt-10 w-10/12 rounded-3xl p-8 relative z-10">

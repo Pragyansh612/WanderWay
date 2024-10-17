@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSession } from "next-auth/react";
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/flight2.json";
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
-export default function FlightSearch() {
+function FlightSearchCont() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [modalMessage, setModalMessage] = useState('');
@@ -84,6 +85,7 @@ export default function FlightSearch() {
     }
     const closeModal = async () => {
         setIsModalOpen(false);
+        setModel("Close")
         router.push('/trips');
     };
     const yesbook = async () => {
@@ -110,13 +112,13 @@ export default function FlightSearch() {
         <div className="relative min-h-screen flex flex-col items-center overflow-hidden bg-gradient-to-br from-blue-200 to-indigo-300">
             {/* Clouds and background */}
             <div className="absolute top-10 left-5 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-32 opacity-70" />
+                <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
             <div className="absolute top-20 right-10 animate-float-fast">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-60" />
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
             <div className="absolute bottom-5 left-15 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-50" />
+                <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
 
             <div className="bg-white bg-opacity-95 shadow-xl mt-10 w-7/12 rounded-3xl p-8 relative z-10 mb-20">
@@ -210,5 +212,13 @@ export default function FlightSearch() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function FlightSearch() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <FlightSearchCont />
+        </Suspense>
     );
 }

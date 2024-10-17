@@ -54,8 +54,8 @@ export async function POST(req) {
           price
       }
     } else if (type === "Train") {
-      const { email, origin, destination, Name, num, arriveTime, departTime, passengers, departureDate, warning } = body;
-      console.log("flightsssss")
+      const { email, origin, destination, Name, num, arriveTime, departTime, passengers, departureDate, warning, price } = body;
+      // console.log("flightsssss")
       if (!email || !departureDate || !arriveTime || !departTime || !passengers || !Name || !num || !origin || !destination) {
         return NextResponse.json({ error: "All fields are required." }, { status: 400 });
       }
@@ -77,7 +77,8 @@ export async function POST(req) {
         arriveTime,
         departTime,
         passengers,
-        departureDate
+        departureDate,
+        price
       };
     } else if (type === "Hotel") {
       const { email, origin,
@@ -88,7 +89,7 @@ export async function POST(req) {
         image,
         rating,
         price, warning } = body;
-      console.log("hotelsss")
+      // console.log("hotelsss")
       if (!email || !from || !to || !number || !price || !name) {
         return NextResponse.json({ error: "All fields are required." }, { status: 400 });
       }

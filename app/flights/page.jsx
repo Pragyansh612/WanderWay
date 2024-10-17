@@ -5,8 +5,8 @@ import axios from 'axios';
 import getAmadeusToken from '../utils/amadeusToken';
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/flight.json";
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
 export default function FlightSearch() {
     const [flights, setFlights] = useState([]);
@@ -19,6 +19,11 @@ export default function FlightSearch() {
     const [price, setPrice] = useState([]);
 
     const router = useRouter();
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    const date = `${year}-${month}-${day}`;
 
     const defaultOptions = {
         loop: true,
@@ -30,6 +35,14 @@ export default function FlightSearch() {
     };
 
     const searchFlights = async () => {
+        if (!origin || !destination || !departureDate || !number) {
+            setError("Please fill out all fields.");
+            return;
+        }
+        if(date > departureDate){
+            setError("Invalid Date");
+            return;
+        }
         setLoading(true);
         setError(null);
         try {
@@ -100,7 +113,7 @@ export default function FlightSearch() {
                 left: '5%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '120px', opacity: 0.7 }} />
+                 <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
 
             {/* Floating Cloud 2 */}
@@ -110,7 +123,7 @@ export default function FlightSearch() {
                 right: '10%',
                 animation: 'float 6s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '100px', opacity: 0.6 }} />
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
 
             {/* Floating Cloud 3 */}
@@ -120,7 +133,7 @@ export default function FlightSearch() {
                 left: '15%',
                 animation: 'float 8s ease-in-out infinite',
             }}>
-                <img src="/cloud.png" alt="Cloud" style={{ height: '110px', opacity: 0.5 }} />
+               <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
 
             <div className="bg-white bg-opacity-95 shadow-xl mt-10 w-7/12 rounded-3xl p-8 relative z-10">
@@ -133,6 +146,7 @@ export default function FlightSearch() {
                             onChange={(e) => setOrigin(e.target.value)}
                             placeholder="Origin IATA Code (e.g., BOM)"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="text"
@@ -140,12 +154,14 @@ export default function FlightSearch() {
                             onChange={(e) => setDestination(e.target.value)}
                             placeholder="Destination IATA Code (e.g., DEL)"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="date"
                             value={departureDate}
                             onChange={(e) => setDepartureDate(e.target.value)}
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <input
                             type="number"
@@ -153,6 +169,7 @@ export default function FlightSearch() {
                             onChange={(e) => setNumber(e.target.value)}
                             placeholder="Number of passengers"
                             className="border p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                            required
                         />
                         <button
                             onClick={searchFlights}

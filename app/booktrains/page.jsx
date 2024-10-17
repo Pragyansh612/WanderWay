@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSession } from "next-auth/react";
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/train2.json";
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 
-export default function FlightSearch() {
+function TrainSearchContent() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [modalMessage, setModalMessage] = useState('');
@@ -25,8 +26,9 @@ export default function FlightSearch() {
     const departureDate = searchParams.get('departureDate');
     const arriveTime = searchParams.get('arriveTime');
     const departTime = searchParams.get('departTime');
+    const price = searchParams.get('price');
 
-    const router = useRouter()
+    const router = useRouter();
     const defaultOptions = {
         loop: true,
         autoplay: true,
@@ -55,7 +57,8 @@ export default function FlightSearch() {
                     departTime,
                     passengers,
                     departureDate,
-                    warning
+                    warning,
+                    price
                 }),
             });
 
@@ -63,21 +66,22 @@ export default function FlightSearch() {
             if (res.ok) {
                 setModalMessage('Train booked successfully!');
                 setIsModalOpen(true);
-            } else if(res.status === 409) {
+                setModel("Close");
+            } else if (res.status === 409) {
                 const data = await res.json();
                 setModalMessage(data.error || 'Something went wrong');
-                setModel("Yes")
-                setWarning(true)
+                setModel("Yes");
+                setWarning(true);
                 setIsModalOpen(true);
             } else {
                 const data = await res.json();
-                setModel("Close")
+                setModel("Close");
                 setModalMessage(data.error || 'Something went wrong');
                 setIsModalOpen(true);
             }
         } catch (error) {
             setLoading(false);
-            setModel("Close")
+            setModel("Close");
             setModalMessage('An error occurred during booking');
             setIsModalOpen(true);
         }
@@ -87,15 +91,16 @@ export default function FlightSearch() {
         setIsModalOpen(false);
         router.push('/trips');
     };
+
     const yesbook = async () => {
         setIsModalOpen(false);
         if (warning) {
             try {
-                bookTrain()
-                setWarning(false)
+                await bookTrain();
+                setWarning(false);
             } catch (error) {
                 setLoading(false);
-                setModel("Close")
+                setModel("Close");
                 setModalMessage('An error occurred during booking');
                 setIsModalOpen(true);
             }
@@ -103,6 +108,7 @@ export default function FlightSearch() {
             router.push('/trips');
         }
     }
+
     const nobook = () => {
         setIsModalOpen(false);
     }
@@ -111,13 +117,13 @@ export default function FlightSearch() {
         <div className="relative min-h-screen flex flex-col items-center overflow-hidden bg-gradient-to-br from-blue-200 to-indigo-300">
             {/* Clouds and background */}
             <div className="absolute top-10 left-5 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-32 opacity-70" />
+                <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
             <div className="absolute top-20 right-10 animate-float-fast">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-60" />
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
             <div className="absolute bottom-5 left-15 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-50" />
+                <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
 
             <div className="bg-white bg-opacity-95 shadow-xl mt-10 w-7/12 rounded-3xl p-8 relative z-10 mb-10">
@@ -146,6 +152,9 @@ export default function FlightSearch() {
                         <div className="text-xl text-gray-700">
                             <span className="font-semibold">Number of passengers:</span> {passengers}
                         </div>
+                        <div className="text-xl text-gray-700">
+                            <span className="font-semibold">Price:</span> {price}
+                        </div>
                         <button
                             onClick={bookTrain}
                             className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-lg font-semibold py-3 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300"
@@ -169,7 +178,7 @@ export default function FlightSearch() {
                             onClick={closeModal}
                             className="w-full bg-blue-500 text-white font-semibold py-2 rounded"
                         >
-                            {model}
+                            Close
                         </button> :
                             <div className="flex gap-5">
                                 <button
@@ -212,5 +221,13 @@ export default function FlightSearch() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function TrainSearch() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <TrainSearchContent />
+        </Suspense>
     );
 }

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MdFlightTakeoff } from "react-icons/md";
 import { FaTrainSubway, FaHotel } from "react-icons/fa6";
 import { PiHandbagFill } from "react-icons/pi";
+import Image from "next/image";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -34,7 +35,7 @@ export default function Home() {
         animation: 'float 8s ease-in-out infinite',
         overflow: "hidden"
       }}>
-        <img src="/cloud.png" alt="Cloud" style={{ height: '120px', opacity: 0.7 }} />
+        <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
       </div>
 
       {/* Floating Cloud 2 */}
@@ -45,7 +46,7 @@ export default function Home() {
         animation: 'float 6s ease-in-out infinite',
         overflow: "hidden"
       }}>
-        <img src="/cloud.png" alt="Cloud" style={{ height: '100px', opacity: 0.6 }} />
+        <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
       </div>
 
       {/* Floating Cloud 3 */}
@@ -56,7 +57,7 @@ export default function Home() {
         animation: 'float 8s ease-in-out infinite',
         overflow: "hidden"
       }}>
-        <img src="/cloud.png" alt="Cloud" style={{ height: '110px', opacity: 0.5 }} />
+        <Image src="/cloud.png" alt="Cloud" width={150} height={120}opacity={0.5} />
       </div>
 
       {/* Main Content */}
@@ -111,7 +112,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Inline Style for Floating Animation */}
       <style jsx>{`
         @keyframes float {
           0% {

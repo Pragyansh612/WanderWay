@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import Lottie from "react-lottie";
 import animationData from "../../public/animation/trip.json";
+import Image from "next/image";
+
+export const dynamic = 'force-dynamic';
 
 export default function Page() {
     const { data: session } = useSession();
@@ -75,13 +78,13 @@ export default function Page() {
     return (
         <div className="relative min-h-screen flex flex-col items-center overflow-hidden bg-gradient-to-br from-blue-200 to-indigo-300">
             <div className="absolute top-10 left-5 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-32 opacity-70" />
+                <Image src="/cloud.png" alt="Cloud" width={130} height={110} opacity={0.7} />
             </div>
-            <div className="absolute top-20 right-10 animate-float-fast">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-60" />
+            <div className="absolute top-60 right-10 animate-float-fast">
+                <Image src="/cloud.png" alt="Cloud" width={140} height={100} opacity={0.6} />
             </div>
             <div className="absolute bottom-0 left-15 animate-float-slow">
-                <img src="/cloud.png" alt="Cloud" className="h-28 opacity-50" />
+                <Image src="/cloud.png" alt="Cloud" width={150} height={120} opacity={0.5} />
             </div>
 
             <div className="bg-white bg-opacity-95 shadow-xl w-10/12 mb-20 rounded-3xl p-8 relative z-10 mt-10 ">
@@ -126,6 +129,7 @@ export default function Page() {
                                                             <p><strong>Depart Time:</strong> {trip.departTime}</p>
                                                             <p><strong>Total Nights:</strong> {trip.arriveTime.slice(7)}</p>
                                                             <p><strong>Number of People:</strong> {trip.passengers}</p>
+                                                            <p><strong>Price Paid:</strong> ₹{trip.price}</p>
                                                             <button
                                                                 onClick={() => cancel(index)}
                                                                 className="bg-red-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300">
