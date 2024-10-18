@@ -22,7 +22,7 @@ const Navbar = () => {
         p-4 flex items-center justify-between shadow-md">
             <h1 className="text-white text-3xl font-bold mx-10">
                 <Link href="/">
-                    WanderWay
+                    WanderWayy
                 </Link>
             </h1>
 

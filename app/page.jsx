@@ -63,7 +63,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="bg-white bg-opacity-90 shadow-lg mt-10 h-96 w-10/12 md:w-8/12 lg:w-6/12 rounded-2xl p-5 relative z-10  overflow-y-hidden">
         <div className="text-4xl font-bold text-center text-gray-800 flex gap-2 justify-center">
-          Welcome to <h1 className=" text-sky-400">Wander-way</h1>
+          Welcome to <h1 className=" text-sky-400">Wander-Wayy</h1>
         </div>
 
         <div className="flex justify-between gap-10">
